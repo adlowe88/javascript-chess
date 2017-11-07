@@ -1,7 +1,7 @@
 //Defining the board array
 const numBoardSq = 120;
 
-//Defining the pieces
+//Defining the pieces on squares
 const pieces = {empty: 0, wP: 1, wKn: 2, wB: 3, wR: 4, wQ: 5, wK:6,
                 bP: 7, bKn: 8, bB: 9, bR: 10, bQ: 11, bK: 12};
 
@@ -42,3 +42,33 @@ const ranksBoardArr = new Array (numBoardSq);
 const getSquare = function (file, rank) {
   return ( (21 + (file) ) + ( (rank) * 10 ) );
 };
+
+//Generate 4 random numbers filling 8 bits, 3 have been shift varying amounts to get a good coverage of the 31 bits
+//To allocate position keys
+const randomNumber32bit = function () {
+
+	return (Math.floor((Math.random()*32)+1) << 23) | (Math.floor((Math.random()*32)+1) << 16)
+		 | (Math.floor((Math.random()*32)+1) << 8) | Math.floor((Math.random()*32)+1);
+
+};
+
+//variables correspond to pieces{}
+//Values of each piece
+// const pieceVal = [0, 100, 325, 325, 550, 1000, 50000, 100, 325, 325, 550, 1000, 50000];
+// const pieceCol = [ colors.both, colors.white, colors.white, colors.white, colors.white, colors.white, colors.white,
+// 	colors.black, colors.black, colors.black, colors.black, colors.black, colors.black ];
+//
+//
+// const nonPawn = [ false, false, true, true, true, true, true, false, true, true, true, true, true ];
+// //Major pieces: rook, queen, king
+// const majPiece = [ false, false, false, false, true, true, true, false, false, false, true, true, true ];
+// //Minor pieces: knight, bishops
+// const minPiece = [ false, false, true, true, false, false, false, false, true, true, false, false, false ];
+//
+// //ways to move
+// const pawn = [ false, true, false, false, false, false, false, true, false, false, false, false, false ];
+// const knight = [ false, false, true, false, false, false, false, false, true, false, false, false, false ];
+// const king = [ false, false, false, false, false, false, true, false, false, false, false, false, true ];
+// const rookQueen = [ false, false, false, false, true, true, false, false, false, false, true, true, false ];
+// const bishopQueen = [ false, false, false, true, false, true, false, false, false, true, false, true, false ];
+// const slides = [ false, false, false, true, true, true, false, false, false, true, true, true, false ];
