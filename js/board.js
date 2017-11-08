@@ -11,7 +11,7 @@ const gameBoard = {
   //Record the index of every half move
   halfMoves: 0,
   //The number of half moves in the search tree;
-  // ply: 0,
+  ply: 0,
   //Permissions to castle
   // eg. 1101 --> white cannot castle queenside(wCQ: 2)
   // if (1101 & wCK) != 0 means white CAN castle kingside
@@ -20,7 +20,7 @@ const gameBoard = {
   enPasant: 0,
   //New array to store the current material value of each side
   material: new Array(2),
-  //how many of each piece type
+  //how many of each piece type ie 4 black pawns
   pieceNum: new Array(13),
   //14 not 13 to give extra space just incase. See below
   pList: new Array(14 * 10),
@@ -64,10 +64,12 @@ const gameBoard = {
 //need to store the max capacity of each piece ie promoting every pawn to knight = 10 knights
 //wN: 2 --> up to 10 max, so want to have enough possible places to store the 10 knights, so we never cross over indicies
 //wN * 10 + i --> 0 based index on pieceNum()
+
 // for (i = 0; i < pieceNum[wN]; i++) {
 //   sq = pieceListArr[wN * 10 + i]
 // }
 //therefore wN occupy 20-29, wP 10- 19
+//pieceNum --> how many of that piece type
 const pieceIndex = function (piece, pieceNum) {
   return (piece * 10 + pieceNum);
 };
@@ -91,8 +93,50 @@ const pieceIndex = function (piece, pieceNum) {
 // }
 //therefore wN occupy 20-29, wP 10- 19
 
+
+
+
+// Print board to console.
+
+const printBoard = function () {
+  let sq;
+  let piece;
+  // debugger;
+  //Start loop at H8, then --
+  for (let rank = ranks.rank8; rank >= ranks.rank1; rank--) {
+    //Get the character for the rank (8 --> 1), and put some filler spaces
+    let line = (rankChar[rank] + "  ");
+    //loop through files
+    for (let file = files.fileA; file <= files.fileH; file++) {
+      //Get square
+      sq = getSquare(file, rank);
+      //Get piece on that square
+      piece = gameBoard.pieces[sq];
+      // console.log(gameBoard.pieces[sq]);
+      //print piece indexing pieceChar[]
+      line += (" " + pieceChar[piece] + " ");
+    };
+    console.log(line);
+  };
+
+    console.log("");
+    //log empty line
+    let line = "  ";
+    for (file = files.fileA; file <= files.fileH; file++) {
+      //Put files underneath pieces, so we can actually see rank and file notation
+      line += (" " + fileChar[file] + " ");
+    };
+    console.log(line);
+
+};
+
+
+
+
+
 const generatePosKey = function () {
   let piece = pieces.empty;
+  let fullKey = 0;
   //loop through all the squares 0 - 120
   for (let sq = 0; i < numBoardSq; sq++) {
     //get a piece, and if piece is not empty, and not = 100 (offBoard)
@@ -123,6 +167,7 @@ const generatePosKey = function () {
 //move to e4 --> rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1
 
 const fenString = function (FEN) {
+  // debugger;
   //Before you put in a position, we need to clear board, and all stored info
   resetBoard();
   //rank/file starting at A8
@@ -136,6 +181,7 @@ const fenString = function (FEN) {
   let fenCount = 0;
   //While loop to keep looping while rank is >= rank 1
   //every time we see / or a space in string, rank--
+  // debugger;
   while ((rank >= ranks.rank1) && fenCount < FEN.length) {
     count = 1;
     //if the particular char is a piece letter or a number
@@ -188,7 +234,7 @@ const fenString = function (FEN) {
 
         piece = pieces.empty;
         //So if we see 4, we can set 4 empty cells...
-        count = +FEN[fenCount];
+        count = FEN[fenCount].charCodeAt() - '0'.charCodeAt();
         break;
 
       case "/":
@@ -218,6 +264,7 @@ const fenString = function (FEN) {
 
   //While loop ends at first space
   //Set who's turn
+  //If you see w
   if (FEN[fenCount] === "w") {
     gameBoard.side = colors.white;
     //Skip next space
@@ -265,11 +312,12 @@ const fenString = function (FEN) {
     rank = FEN[fenCount + 1].charCodeAt() - "1".charCodeAt();
     console.log("FEN[fenCount]" + FEN[fenCount] + "File" + file + "Rank" + rank);
     //Set the enPasant square
-    gameBoard.enPasant = getSquare;
+    gameBoard.enPasant = getSquare(file, rank);;
   };
 
   //Generate position key
   gameBoard.posKey = generatePosKey();
+  console.log("FEN SUCSESS!");
 
 };
 
@@ -281,19 +329,19 @@ const resetBoard = function () {
 	}
 
   //Set internal board squares to have no pieces on it
-	for(i = 21; i < 99; ++i) {
+	for(i = 21; i <= 98; i++) {
 		gameBoard.pieces[i] = pieces.empty;
 	}
 
-	for(i = 0; i < 14 * 120; ++i) {
+	for(i = 0; i < 14 * 120; i++) {
 		gameBoard.pList[i] = pieces.empty;
 	}
 
-	for(i = 0; i < 2; ++i) {
+	for(i = 0; i < 2; i++) {
 		gameBoard.material[i] = 0;
 	}
 
-	for(i = 0; i < 13; ++i) {
+	for(i = 0; i < 13; i++) {
 		gameBoard.pieceNum[i] = 0;
 	}
 
@@ -307,6 +355,29 @@ const resetBoard = function () {
 	// gameBoard.moveListStart[GameBoard.ply] = 0;
 
 }
+
+const updateMaterialList = function () {
+  let sq;
+  let piece;
+  let color;
+
+  for (let i = 21; i <= 98; i++) {
+    //Get piece
+    piece = gameBoard.pieces[sq];
+    //If it's not empty
+    if (piece != piece.empty) {
+      console.log(piece + sq);
+      //Get the pieces color
+      color = pieceCol[piece];
+      //add the pieces value to material[] for that color
+      gameBoard.material[color] += pieceVal[piece];
+      //Take index of that piece and the current pieceNum and assign to sq
+      gameBoard.pList[pieceIndex(piece, gameBoard.pieceNum[piece])] = sq;
+      //Increment [piece] index
+      gameBoard.pieceNum[piece]++;
+    };
+  };
+};
 //Material List
 // Loop through the board,
 const materialList = function () {
@@ -342,5 +413,6 @@ const materialList = function () {
   };
 };
 
-// printBoard();
+
+
 materialList();

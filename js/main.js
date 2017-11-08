@@ -1,6 +1,9 @@
 $(document).ready(function () {
   console.log("Main INIT");
   // printBoard();
+  // fenString(startingFEN);
+  // printBoard();
+  init();
 });
 
 
@@ -59,6 +62,7 @@ const initKeys = function () {
   };
 };
 
-
-initBoard();
-initKeys();
+const init = function () {
+  initBoard();
+  initKeys();
+};

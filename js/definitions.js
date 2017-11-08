@@ -6,7 +6,7 @@ const numBoardSq = 120;
 
 //Defining the pieces on squares
 const pieces = {empty: 0, wP: 1, wN: 2, wB: 3, wR: 4, wQ: 5, wK:6,
-                bP: 7, bKn: 8, bB: 9, bR: 10, bQ: 11, bK: 12};
+                bP: 7, bN: 8, bB: 9, bR: 10, bQ: 11, bK: 12};
 
 const colors = {white: 0, black: 1, both: 2};
 
@@ -48,6 +48,15 @@ const filesBoardArr = new Array (numBoardSq);
 const ranksBoardArr = new Array (numBoardSq);
 
 
+//Starting FEN string
+startingFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
+//For ease of printing board to console
+let pieceChar = ".PNBRQKpnbrqk";
+let sideChar = "wb-";
+let rankChar = "12345678";
+let fileChar = "ABCDEFGH";
+
 //To get the relevant square number, pass file and rank as arguments
 const getSquare = function (file, rank) {
   return ( (21 + (file) ) + ( (rank) * 10 ) );
@@ -69,7 +78,7 @@ const randomNumber32bit = function () {
 const pieceKeys = new Array(14 * 120);
 const castleKeys = new Array(16); // 0-1111
 
-var sideKeys;
+let sideKeys;
 
 // const 120to64sq = new Array(numBoardSq);
 // const 64to120sq = new Array(64);
