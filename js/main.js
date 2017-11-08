@@ -41,28 +41,22 @@ const initBoard = function () {
   console.log(ranksBoardArr[squares.E8]);
   console.log(filesBoardArr[squares.E5]);
   console.log(ranksBoardArr[squares.E5]);
-  // for (rank = ranks.rank1; rank <= ranks.rank8; rank++) {
-  //   for (file = files.fileA; file <= files.filesH; file++) {
-  //
-  //     sq = getSquare(file, rank);
-  //
-  //     filesBoardArr[sq] = file;
-  //     ranksBoardArr[sq] = rank;
-  //   };
-  // };
+
+//Initialize the keys with random numbers
+const initKeys = function () {
+  //loop through piece key array
+  for (let i = 0; i < 14 * 120; i++) {
+    pieceKeys[i] = randomNumber32bit();
+  };
+
+  sideKeys = randomNumber32bit();
+
+  //castlePerm
+  for (i = 0; i < 16; i++) {
+    castleKeys[i] = randomNumber32bit();
+  };
 };
 
-// console.log(filesBoardArr[0]);
-// console.log(filesBoardArr[squares.A1]);
-// console.log(`${filesBoardArr[squares.A1]} ${ranksBoardArr[squares.A1]}`);
-// console.log(`${filesBoardArr[squares.E4]} ${ranksBoardArr[squares.E4]}`);
-
-
-//Initialization function
-
-const init = function () {
-  console.log("init called");
-};
 
 initBoard();
-init();
+initKeys();

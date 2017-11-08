@@ -52,6 +52,15 @@ const randomNumber32bit = function () {
 
 };
 
+
+//Arrays to store the keys generated
+//piece * 120 + sq --> unique # for each piece and square
+//for enPasant 0 * 120 + sq, as wP starts from 1
+const pieceKeys = new Array(14 * 120);
+const castleKeys = new Array(16); // 0-1111
+
+const sideKeys;
+
 //variables correspond to pieces{}
 //Values of each piece
 // const pieceVal = [0, 100, 325, 325, 550, 1000, 50000, 100, 325, 325, 550, 1000, 50000];

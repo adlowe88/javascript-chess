@@ -46,7 +46,7 @@ const gameBoard = {
   //Then take key, starting as 0,and XOR in all the random numbers to represent the current position
   //key ^= piece1 will remove the piece from the board, and maintain key integrity
   //eg. if piece moves to capture something, still within the unique key, whilst removing the piece taken
-  //repetition detection, draw 
+  //repetition detection, draw
 
   positionKey: 0,
 
@@ -68,7 +68,6 @@ const pieceIndex = function (piece, pieceNum) {
   return (piece * 10 + pieceNum);
 };
 
-
 //Piece lists pList[] - to generate moves
 //Loop through board, find if there is a piece on the square and its on the relevant sides turn
 // for pieces[],
@@ -87,3 +86,32 @@ const pieceIndex = function (piece, pieceNum) {
 //   sq = pieceListArr[wKn * 10 + i]
 // }
 //therefore wKn occupy 20-29, wP 10- 19
+
+const generatePosKey = function () {
+  let piece = pieces.empty;
+  //loop through all the squares 0 - 120
+  for (let sq = 0; i < numBoardSq; sq++) {
+    //get a piece, and if piece is not empty, and not = 100 (offBoard)
+    piece = gameBoard.piece[sq];
+    if (piece != pieces.empty && piece != squares.offBoard) {
+      //if there is a piece, we will hash in the random key at position piece x 120 + square
+      fullKey ^= pieceKeys[(piece * 120) + sq];
+    };
+  };
+
+  //Hash in sideKeys
+  if (gameBoard.sideKeys === colors.white) {
+    fullKey ^= sideKeys;
+  };
+
+  //If enPasant square isnt noSq, (the square HAS been set in this position), hash it in
+  //Cant use piece * 120, as would be 0 , so we just use the square itself
+  if (gameBoard.enPasant != squares.noSq) {
+    finalKey ^= pieceKeys[gameBoard.enPas];
+  };
+
+  fullKey ^= castleKeys[gameBoard.castlePerm];
+
+  return fullKey;
+
+};
