@@ -1,8 +1,11 @@
+
+
+
 //Defining the board array
 const numBoardSq = 120;
 
 //Defining the pieces on squares
-const pieces = {empty: 0, wP: 1, wKn: 2, wB: 3, wR: 4, wQ: 5, wK:6,
+const pieces = {empty: 0, wP: 1, wN: 2, wB: 3, wR: 4, wQ: 5, wK:6,
                 bP: 7, bKn: 8, bB: 9, bR: 10, bQ: 11, bK: 12};
 
 const colors = {white: 0, black: 1, both: 2};
@@ -28,6 +31,12 @@ const squares = {
   noSq: 99, offBoard: 100
 };
 
+//List of moves board has in given position
+// let maxGameMoves = 2048;
+//Possible moves to be generated;
+// let maxPositionMoves = 256;
+//Depth of moves engine searches
+// let maxDepth = 64;
 
 
 //Want to be able to return the square index for a particular rank and file
@@ -37,6 +46,7 @@ const squares = {
 
 const filesBoardArr = new Array (numBoardSq);
 const ranksBoardArr = new Array (numBoardSq);
+
 
 //To get the relevant square number, pass file and rank as arguments
 const getSquare = function (file, rank) {
@@ -59,25 +69,28 @@ const randomNumber32bit = function () {
 const pieceKeys = new Array(14 * 120);
 const castleKeys = new Array(16); // 0-1111
 
-const sideKeys;
+var sideKeys;
+
+// const 120to64sq = new Array(numBoardSq);
+// const 64to120sq = new Array(64);
 
 //variables correspond to pieces{}
 //Values of each piece
-// const pieceVal = [0, 100, 325, 325, 550, 1000, 50000, 100, 325, 325, 550, 1000, 50000];
-// const pieceCol = [ colors.both, colors.white, colors.white, colors.white, colors.white, colors.white, colors.white,
-// 	colors.black, colors.black, colors.black, colors.black, colors.black, colors.black ];
-//
-//
-// const nonPawn = [ false, false, true, true, true, true, true, false, true, true, true, true, true ];
-// //Major pieces: rook, queen, king
-// const majPiece = [ false, false, false, false, true, true, true, false, false, false, true, true, true ];
-// //Minor pieces: knight, bishops
-// const minPiece = [ false, false, true, true, false, false, false, false, true, true, false, false, false ];
-//
-// //ways to move
-// const pawn = [ false, true, false, false, false, false, false, true, false, false, false, false, false ];
-// const knight = [ false, false, true, false, false, false, false, false, true, false, false, false, false ];
-// const king = [ false, false, false, false, false, false, true, false, false, false, false, false, true ];
-// const rookQueen = [ false, false, false, false, true, true, false, false, false, false, true, true, false ];
-// const bishopQueen = [ false, false, false, true, false, true, false, false, false, true, false, true, false ];
-// const slides = [ false, false, false, true, true, true, false, false, false, true, true, true, false ];
+const pieceVal = [0, 100, 325, 325, 550, 1000, 50000, 100, 325, 325, 550, 1000, 50000];
+const pieceCol = [ colors.both, colors.white, colors.white, colors.white, colors.white, colors.white, colors.white,
+	colors.black, colors.black, colors.black, colors.black, colors.black, colors.black ];
+
+
+const nonPawn = [ false, false, true, true, true, true, true, false, true, true, true, true, true ];
+//Major pieces: rook, queen, king
+const majPiece = [ false, false, false, false, true, true, true, false, false, false, true, true, true ];
+//Minor pieces: knight, bishops
+const minPiece = [ false, false, true, true, false, false, false, false, true, true, false, false, false ];
+
+//ways to move
+const pawn = [ false, true, false, false, false, false, false, true, false, false, false, false, false ];
+const knight = [ false, false, true, false, false, false, false, false, true, false, false, false, false ];
+const king = [ false, false, false, false, false, false, true, false, false, false, false, false, true ];
+const rookQueen = [ false, false, false, false, true, true, false, false, false, false, true, true, false ];
+const bishopQueen = [ false, false, false, true, false, true, false, false, false, true, false, true, false ];
+const slides = [ false, false, false, true, true, true, false, false, false, true, true, true, false ];

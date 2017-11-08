@@ -1,6 +1,6 @@
 $(document).ready(function () {
   console.log("Main INIT");
-
+  // printBoard();
 });
 
 
@@ -32,7 +32,6 @@ const initBoard = function () {
       ranksBoardArr[sq] = rank;
     }
   }
-
   console.log(filesBoardArr[0]);
   console.log(ranksBoardArr[0]);
   console.log(filesBoardArr[squares.A1]);
@@ -41,6 +40,9 @@ const initBoard = function () {
   console.log(ranksBoardArr[squares.E8]);
   console.log(filesBoardArr[squares.E5]);
   console.log(ranksBoardArr[squares.E5]);
+};
+
+
 
 //Initialize the keys with random numbers
 const initKeys = function () {

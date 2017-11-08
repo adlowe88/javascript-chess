@@ -11,7 +11,7 @@ const gameBoard = {
   //Record the index of every half move
   halfMoves: 0,
   //The number of half moves in the search tree;
-  ply: 0,
+  // ply: 0,
   //Permissions to castle
   // eg. 1101 --> white cannot castle queenside(wCQ: 2)
   // if (1101 & wCK) != 0 means white CAN castle kingside
@@ -50,6 +50,10 @@ const gameBoard = {
 
   positionKey: 0,
 
+  // moveList: new Array(maxDepth * maxPositionMoves);
+  // movesScore: new Array(maxDepth * maxPositionMoves);
+  // moveListStart: new Array(maxDepth);
+
 };
 
 //For a given piece, we want to know what square it is on
@@ -58,12 +62,12 @@ const gameBoard = {
 // piece list array [i] pieceListArr[]
 //need to calculate the index to give the square  ie sqOfPiece = pieceListArr[i]
 //need to store the max capacity of each piece ie promoting every pawn to knight = 10 knights
-//wKn: 2 --> up to 10 max, so want to have enough possible places to store the 10 knights, so we never cross over indicies
-//wKn * 10 + i --> 0 based index on pieceNum()
-// for (i = 0; i < pieceNum[wKn]; i++) {
-//   sq = pieceListArr[wKn * 10 + i]
+//wN: 2 --> up to 10 max, so want to have enough possible places to store the 10 knights, so we never cross over indicies
+//wN * 10 + i --> 0 based index on pieceNum()
+// for (i = 0; i < pieceNum[wN]; i++) {
+//   sq = pieceListArr[wN * 10 + i]
 // }
-//therefore wKn occupy 20-29, wP 10- 19
+//therefore wN occupy 20-29, wP 10- 19
 const pieceIndex = function (piece, pieceNum) {
   return (piece * 10 + pieceNum);
 };
@@ -80,19 +84,19 @@ const pieceIndex = function (piece, pieceNum) {
 // piece list array [i] pieceListArr[]
 //need to calculate the index to give the square  ie sqOfPiece = pieceListArr[i]
 //need to store the max capacity of each piece ie promoting every pawn to knight = 10 knights
-//wKn: 2 --> up to 10 max, so want to have enough possible places to store the 10 knights, so we never cross over indicies
-//wKn * 10 + i --> 0 based index on pieceNum()
-// for (i = 0; i < pieceNum[wKn]; i++) {
-//   sq = pieceListArr[wKn * 10 + i]
+//wN: 2 --> up to 10 max, so want to have enough possible places to store the 10 knights, so we never cross over indicies
+//wN * 10 + i --> 0 based index on pieceNum()
+// for (i = 0; i < pieceNum[wN]; i++) {
+//   sq = pieceListArr[wN * 10 + i]
 // }
-//therefore wKn occupy 20-29, wP 10- 19
+//therefore wN occupy 20-29, wP 10- 19
 
 const generatePosKey = function () {
   let piece = pieces.empty;
   //loop through all the squares 0 - 120
   for (let sq = 0; i < numBoardSq; sq++) {
     //get a piece, and if piece is not empty, and not = 100 (offBoard)
-    piece = gameBoard.piece[sq];
+    piece = gameBoard.pieces[sq];
     if (piece != pieces.empty && piece != squares.offBoard) {
       //if there is a piece, we will hash in the random key at position piece x 120 + square
       fullKey ^= pieceKeys[(piece * 120) + sq];
@@ -113,5 +117,230 @@ const generatePosKey = function () {
   fullKey ^= castleKeys[gameBoard.castlePerm];
 
   return fullKey;
+};
+
+//eg. at start   rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
+//move to e4 --> rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1
+
+const fenString = function (FEN) {
+  //Before you put in a position, we need to clear board, and all stored info
+  resetBoard();
+  //rank/file starting at A8
+  let rank = ranks.rank8;
+  let file = files.fileA;
+  let piece = 0;
+  let count = 0;
+  let sq = 0;
+  //Used to point to a particular character in the string
+  //fen[fenCount]
+  let fenCount = 0;
+  //While loop to keep looping while rank is >= rank 1
+  //every time we see / or a space in string, rank--
+  while ((rank >= ranks.rank1) && fenCount < FEN.length) {
+    count = 1;
+    //if the particular char is a piece letter or a number
+    switch (FEN[fenCount]) {
+      case "p":
+        piece = pieces.bP;
+        break;
+      case "n":
+        piece = pieces.bN;
+        break;
+      case "b":
+        piece = pieces.bB;
+        break;
+      case "r":
+        piece = pieces.bR;
+        break;
+      case "q":
+        piece = pieces.bQ;
+        break;
+      case "k":
+        piece = pieces.bK;
+        break;
+      case "P":
+        piece = pieces.wP;
+        break;
+      case "N":
+        piece = pieces.wN;
+        break;
+      case "B":
+        piece = pieces.wB;
+        break;
+      case "R":
+        piece = pieces.wR;
+        break;
+      case "Q":
+        piece = pieces.wQ;
+        break;
+      case "K":
+        piece = pieces.wK;
+        break;
+
+      case "1":
+      case "2":
+      case "3":
+      case "4":
+      case "5":
+      case "6":
+      case "7":
+      case "8":
+
+        piece = pieces.empty;
+        //So if we see 4, we can set 4 empty cells...
+        count = +FEN[fenCount];
+        break;
+
+      case "/":
+      case " ":
+        rank--;
+        //reset to leftmost file
+        file = files.fileA;
+        fenCount++;
+        continue;
+
+      default:
+        console.log("FEN ERROR");
+        return;
+    };
+    //if we haven't continued --> not at end of rank, but have found a piece or value
+    //Using the count
+      for (let i = 0; i < count; i++) {
+        //getSquare
+        sq = getSquare(file, rank);
+        //set pieces[] to the current piece type
+        gameBoard.pieces[sq] = piece;
+        file++;
+      };
+    //Go to the next character in string
+    fenCount++;
+  };
+
+  //While loop ends at first space
+  //Set who's turn
+  if (FEN[fenCount] === "w") {
+    gameBoard.side = colors.white;
+    //Skip next space
+    fenCount += 2;
+  } else {
+    gameBoard.side = colors.black;
+    fenCount += 2;
+  };
+
+  //Castling permission
+  //none = "-";
+  for (let i = 0; i < 4; i++) {
+    if (FEN[fenCount] === " ") {
+      break;
+    };
+
+    switch (FEN[fenCount]) {
+      //gameBoard.castlePerm | castleBits.wCQ = 3 (0000 | 0011 = 3)
+      case "K":
+        gameBoard.castlePerm |= castleBits.wCK;
+        break;
+      case "Q":
+        gameBoard.castlePerm |= castleBits.wCQ;
+        break;
+      case "k":
+        gameBoard.castlePerm |= castleBits.bCK;
+        break;
+      case "q":
+        gameBoard.castlePerm |= castleBits.bCQ;
+        break;
+
+      default:
+        break;
+
+    };
+    fenCount++;
+  };
+  fenCount++;
+
+  //enPasant squares
+  if (FEN[fenCount] != "-") {
+    //get file
+    //String.fromCharCode(); ??
+    file = FEN[fenCount].charCodeAt() - "a".charCodeAt();
+    rank = FEN[fenCount + 1].charCodeAt() - "1".charCodeAt();
+    console.log("FEN[fenCount]" + FEN[fenCount] + "File" + file + "Rank" + rank);
+    //Set the enPasant square
+    gameBoard.enPasant = getSquare;
+  };
+
+  //Generate position key
+  gameBoard.posKey = generatePosKey();
 
 };
+
+
+const resetBoard = function () {
+
+	for(let i = 0; i < numBoardSq; ++i) {
+		gameBoard.pieces[i] = squares.offBoard;
+	}
+
+  //Set internal board squares to have no pieces on it
+	for(i = 21; i < 99; ++i) {
+		gameBoard.pieces[i] = pieces.empty;
+	}
+
+	for(i = 0; i < 14 * 120; ++i) {
+		gameBoard.pList[i] = pieces.empty;
+	}
+
+	for(i = 0; i < 2; ++i) {
+		gameBoard.material[i] = 0;
+	}
+
+	for(i = 0; i < 13; ++i) {
+		gameBoard.pieceNum[i] = 0;
+	}
+
+	gameBoard.side = colors.both;
+	gameBoard.enPasant = squares.noSq;
+	gameBoard.fiftyMove = 0;
+	// gameBoard.ply = 0;
+	// gameBoard.hisPly = 0;
+	gameBoard.castlePerm = 0;
+	gameBoard.posKey = 0;
+	// gameBoard.moveListStart[GameBoard.ply] = 0;
+
+}
+//Material List
+// Loop through the board,
+const materialList = function () {
+  let piece;
+  let sq;
+  let color;
+
+  for (let i = 0; i < 14 * 120; i++) {
+    gameBoard.pList[i] = pieces.empty;
+  };
+
+  for (let i = 0; i < 2; i++) {
+    gameBoard.material[i] = 0;
+  };
+
+  for (let i = 0; i < 13; i++) {
+    gameBoard.pieceNum[i] = 0;
+  };
+
+  for (let i = 21; i < 99; i++ ) {
+    //get piece, if it isnt empty, get its color so we can update piece value list
+    piece = gameBoard.pieces[sq];
+    if (piece != pieces.empty) {
+      // console.log(piece, sq);
+      color = pieceCol[piece];
+
+      gameBoard.material[color] += pieceVal[piece];
+      //Take piece index,
+      gameBoard.pList[pieceIndex(piece, gameBoard.pieceNum[piece])] = sq;
+      //increase index for next piece type
+      gameBoard.pieceNum[piece]++;
+    };
+  };
+};
+
+// printBoard();
+materialList();
