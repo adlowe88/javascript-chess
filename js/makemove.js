@@ -43,9 +43,8 @@ const addPiece = function (sq, piece) {
   hashPiece(piece, sq);
   //piece added to square
   gameBoard.pieces[sq] = piece;
-  console.log("Piee on square" + sq "is now" + piece);
   //increase material[]
-  gameBoard.material[col] += pieceVal[piece];
+  gameBoard.material[color] += pieceVal[piece];
   //index the piece on the square in pList
   gameBoard.pList[pieceIndex(piece, gameBoard.pieceNum[piece])] = sq;
   //increase count of that piece
@@ -55,7 +54,7 @@ const addPiece = function (sq, piece) {
 //moving pieces
 //update correct piece in piece list
 const movePiece = function (from, to) {
-    //the piece we want to moce
+    //the piece we want to on square from
     let piece = gameBoard.pieces[from];
 
     //hash piece off square
