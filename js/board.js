@@ -11,12 +11,12 @@ const gameBoard = {
   //Record the index of every half move
   halfMoves: 0,
   //The number of half moves in the search tree;
-  ply: 0,
+  // ply: 0,
   //Permissions to castle
   // eg. 1101 --> white cannot castle queenside(wCQ: 2)
   // if (1101 & wCK) != 0 means white CAN castle kingside
   castlePerm: 0,
-  //en pasant squares
+  //en pasant squares set after pawn's first move
   enPasant: 0,
   //New array to store the current material value of each side
   material: new Array(2),
@@ -314,8 +314,8 @@ const fenString = function (FEN) {
   if (FEN[fenCount] != "-") {
     //get file
     //String.fromCharCode(); ??
-    file = FEN[fenCount].charCodeAt - "a".charCodeAt();
-    rank = Number(FEN[fenCount]) //FEN[fenCount + 1].charCodeAt() - "1".charCodeAt();
+    file = FEN[fenCount].charAt(); // - "a".charCodeAt();
+    rank = Number(FEN[fenCount]); //FEN[fenCount + 1].charCodeAt() - "1".charCodeAt();
     console.log("FEN[fenCount]" + FEN[fenCount] + "File" + file + "Rank" + rank);
     //Set the enPasant square
     gameBoard.enPasant = getSquare(file, rank);;
@@ -516,6 +516,4 @@ const updateMaterialList = function () {
 //   };
 // };
 
-
-
-materialList();
+// materialList();

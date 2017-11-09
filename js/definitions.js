@@ -47,6 +47,7 @@ const ranksBoardArr = new Array (numBoardSq);
 
 //Starting FEN string
 startingFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+ruyLopezFEN = "r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3";
 
 //For ease of printing board to console
 let pieceChar = ".PNBRQKpnbrqk";
@@ -118,3 +119,57 @@ const kDir = [-1, -10, -9, -11, 1, 10, 9, 11];
 // const SQ120 = function(sq64) {
 // 	return Sq64ToSq120[(sq64)];
 // };
+
+
+
+//Defining functions to retrieve moveList information
+// const move = {
+//   from:
+//   to:
+//   captured:
+// };
+
+// 0000 0000 0000 0000 0000 0111 1111 -> fromSq 0x7F
+// 0000 0000 0000 0011 1111 1000 0000 -> toSq >> 7, 0x7F
+// 0000 0000 0011 1100 0000 0000 0000 -> captured >> 14, 0xF
+// 0000 0000 0100 0000 0000 0000 0000 -> enPasMove 0x40000
+// 0000 0000 1000 0000 0000 0000 0000 -> pawnFirst 0x80000
+// 0000 1111 0000 0000 0000 0000 0000 -> promoted >> 20, 0xF
+// 0001 0000 0000 0000 0000 0000 0000 -> castleMove 0x1000000
+
+//25 bits
+const move = function (fromSq, toSq, captured, promoted, flag) {
+  return (fromSq | (toSq << 7) | (captured << 14) | (promoted << 20) | flag);
+};
+
+//7 bits
+const fromSq = function (move) {
+  return (move & 0x7F);
+};
+
+//7 bits
+const toSq = function (move) {
+  return ((move >> 7) & 0x7F);
+};
+
+//4 bits
+const captured = function () {
+  return ((move >> 14) & 0xF);
+};
+
+//4 bits
+const promoted = function () {
+  return ((move >> 20) & 0xF)
+};
+
+//flags
+let enPasMove = 0x40000;
+let pawnFirst = 0x80000;
+let castleMove = 0x1000000;
+
+//Need to return 0s
+//0111 1100 --> 0x7C
+let captureMove = 0x7C000;
+let promotionMove = 0xF00000;
+
+let noMove = 0;

@@ -1,9 +1,10 @@
 $(document).ready(function () {
   console.log("Main INIT");
-  // printBoard();
   fenString(startingFEN);
   printBoard();
-  init();
+  initBoard();
+  initKeys();
+  // init();
 });
 
 
@@ -62,11 +63,11 @@ const initKeys = function () {
   };
 };
 
-const init = function () {
-  initBoard();
-  initKeys();
-  // InitSq120To64();
-};
+// const init = function () {
+//   initBoard();
+//   initKeys();
+//   // InitSq120To64();
+// };
 
 // const InitSq120To64 = function() {
 //
