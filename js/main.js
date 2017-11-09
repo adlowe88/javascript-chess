@@ -1,8 +1,8 @@
 $(document).ready(function () {
   console.log("Main INIT");
   // printBoard();
-  // fenString(startingFEN);
-  // printBoard();
+  fenString(startingFEN);
+  printBoard();
   init();
 });
 
@@ -65,4 +65,28 @@ const initKeys = function () {
 const init = function () {
   initBoard();
   initKeys();
+  // InitSq120To64();
 };
+
+// const InitSq120To64 = function() {
+//
+// 	let sq = squares.A1;
+// 	let sq64 = 0;
+//
+// 	for(let i = 0; i < numBoardSq; i++) {
+// 		Sq120ToSq64[i] = 65;
+// 	};
+//
+// 	for(let i = 0; i < 64; i++) {
+// 		Sq64ToSq120[i] = 120;
+// 	};
+//
+// 	for(let rank = ranks.rank1; rank <= ranks.rank8; rank++) {
+// 		for(file = files.fileA; file <= files.fileH; file++) {
+// 			sq = getSquare(file,rank);
+// 			Sq64ToSq120[sq64] = sq;
+// 			Sq120ToSq64[sq] = sq64;
+// 			sq64++;
+// 		};
+// 	};
+// };

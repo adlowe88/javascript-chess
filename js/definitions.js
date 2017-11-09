@@ -100,3 +100,21 @@ const king = [ false, false, false, false, false, false, true, false, false, fal
 const rookQueen = [ false, false, false, false, true, true, false, false, false, false, true, true, false ];
 const bishopQueen = [ false, false, false, true, false, true, false, false, false, true, false, true, false ];
 const slides = [ false, false, false, true, true, true, false, false, false, true, true, true, false ];
+
+//Arrays for piece directions, knights, rooks, bishops, king.
+const nDir = [-8, -19, -21, -12, 8, 19, 21, 12];
+const rDir = [-1, -10, 1, 10];
+const bDir = [-9, -11, 11, 9];
+const kDir = [-1, -10, -9, -11, 1, 10, 9, 11];
+
+// //For when we only need to iterate 64 squares, not 120
+// const Sq120ToSq64 = new Array(numBoardSq);
+// const Sq64ToSq120 = new Array(64);
+//
+// const SQ64 = function (sq120) {
+// 	return Sq120ToSq64[(sq120)];
+// };
+//
+// const SQ120 = function(sq64) {
+// 	return Sq64ToSq120[(sq64)];
+// };

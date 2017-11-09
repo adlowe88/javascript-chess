@@ -323,9 +323,101 @@ const fenString = function (FEN) {
 
   //Generate position key
   gameBoard.posKey = generatePosKey();
+  // updateMaterialList();
   console.log("FEN SUCSESS!");
   // debugger;
 };
+
+const isSqAttacked = function (sq, color) {
+  let piece;
+  let nextSq;
+
+  //Who's turn is it?
+  //What pieces are targeting this square?
+  //White going up the board, black going down
+  if (color === colors.white) {
+    if (gameBoard.pieces[sq - 11] === pieces.wP || gameBoard.pieces[sq - 9] === pieces.wP) {
+    console.log("WHITE PAWN!");
+      return true;
+    } else if (gameBoard.pieces[sq + 11] === pieces.bP || gameBoard.pieces[sq + 9] === pieces.bsP) {
+      console.log("BLACK PAWN!");
+      return true;
+    };
+  };
+
+  //Define arrays for piece directions
+
+  //Various knights directions (8)
+  for (let i = 0; i < 8; i++) {
+    piece = gameBoard.pieces[sq + nDir[i]];
+    //On board, color is for the relevant side,
+    if ((piece != squares.offBoard) && (pieceCol[piece] === color) && (knight[piece] === true)) {
+      console.log("KNIGHT!");
+      return true;
+    };
+  };
+
+  //King directions (8)
+  for (let i = 0; i < 8; i++) {
+    piece = gameBoard.pieces[sq + kDir[i]];
+    //On board, color is for the relevant side,
+    if ((piece != squares.offBoard) && (pieceCol[piece] === color) && (king[piece] === true)) {
+      return true;
+    };
+  };
+
+
+  //Rook directions (4)
+  for (let i = 0; i < 4; i++) {
+    let dir = rDir[i];
+    //first square we are going to iterate
+    nextSq = sq + dir;
+    //Get the piece at that square
+    piece = gameBoard.pieces[nextSq];
+    //Whilst still within board limits
+    while (piece != squares.offBoard) {
+      //Keep iterating until we encounter a piece
+      if (piece != pieces.empty) {
+        //Is the piece a rook or a queen and of the same color?
+        if ((rookQueen[piece] === true) && pieceCol[piece] === color) {
+          return true;
+        };
+        //Break while loop because we found another piece, and can't iterate further
+        break;
+      };
+      //Otherwise increment nextSq in the current direction
+      nextSq += dir;
+    };
+  };
+
+  //Bishops directions (4)
+  for (let i = 0; i < 4; i++) {
+    let dir = bDir[i];
+    //first square we are going to iterate
+    nextSq = sq + dir;
+    //Get the piece at that square
+    piece = gameBoard.pieces[nextSq];
+    //Whilst still within board limits
+    while (piece != squares.offBoard) {
+      //Keep iterating until we encounter a piece
+      if (piece != pieces.empty) {
+        //Is the piece a rook or a queen and of the same color?
+        if ((bishopQueen[piece] === true) && pieceCol[piece] === color) {
+          return true;
+        };
+        //Break while loop because we found another piece, and can't iterate further
+        break;
+      };
+      //Otherwise increment nextSq in the current direction
+      nextSq += dir;
+    };
+  };
+  return false;
+};
+
+console.log(isSqAttacked(squares.C3, colors.white));
+console.log(isSqAttacked(squares.D3, colors.white));
+console.log(isSqAttacked(squares.C6, colors.black));
 
 
 const resetBoard = function () {
@@ -363,15 +455,20 @@ const resetBoard = function () {
 }
 
 const updateMaterialList = function () {
-  let sq;
   let piece;
   let color;
 
-  for (let i = 21; i <= 98; i++) {
+  // for (let rank = ranks.rank1; rank <= ranks.rank8; rank++) {
+  //   for (let file = files.fileA; file <= files.fileH; file++) {
+  //     sq = getSquare(file, rank);
+  //   };
+  // };
+
+  for (let sq = 21; sq <= 98; i++) {
     //Get piece
     piece = gameBoard.pieces[sq];
     //If it's not empty
-    if (piece != piece.empty) {
+    if (piece != pieces.empty) {
       console.log(piece + sq);
       //Get the pieces color
       color = pieceCol[piece];
@@ -386,38 +483,38 @@ const updateMaterialList = function () {
 };
 //Material List
 // Loop through the board,
-const materialList = function () {
-  let piece;
-  let sq;
-  let color;
-
-  for (let i = 0; i < 14 * 120; i++) {
-    gameBoard.pList[i] = pieces.empty;
-  };
-
-  for (let i = 0; i < 2; i++) {
-    gameBoard.material[i] = 0;
-  };
-
-  for (let i = 0; i < 13; i++) {
-    gameBoard.pieceNum[i] = 0;
-  };
-
-  for (let i = 21; i < 99; i++ ) {
-    //get piece, if it isnt empty, get its color so we can update piece value list
-    piece = gameBoard.pieces[sq];
-    if (piece != pieces.empty) {
-      // console.log(piece, sq);
-      color = pieceCol[piece];
-
-      gameBoard.material[color] += pieceVal[piece];
-      //Take piece index,
-      gameBoard.pList[pieceIndex(piece, gameBoard.pieceNum[piece])] = sq;
-      //increase index for next piece type
-      gameBoard.pieceNum[piece]++;
-    };
-  };
-};
+// const materialList = function () {
+//   let piece;
+//   let sq;
+//   let color;
+//
+//   for (let i = 0; i < 14 * 120; i++) {
+//     gameBoard.pList[i] = pieces.empty;
+//   };
+//
+//   for (let i = 0; i < 2; i++) {
+//     gameBoard.material[i] = 0;
+//   };
+//
+//   for (let i = 0; i < 13; i++) {
+//     gameBoard.pieceNum[i] = 0;
+//   };
+//
+//   for (let i = 21; i < 99; i++ ) {
+//     //get piece, if it isnt empty, get its color so we can update piece value list
+//     piece = gameBoard.pieces[sq];
+//     if (piece != pieces.empty) {
+//       // console.log(piece, sq);
+//       color = pieceCol[piece];
+//
+//       gameBoard.material[color] += pieceVal[piece];
+//       //Take piece index,
+//       gameBoard.pList[pieceIndex(piece, gameBoard.pieceNum[piece])] = sq;
+//       //increase index for next piece type
+//       gameBoard.pieceNum[piece]++;
+//     };
+//   };
+// };
 
 
 
