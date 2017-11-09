@@ -173,3 +173,20 @@ let captureMove = 0x7C000;
 let promotionMove = 0xF00000;
 
 let noMove = 0;
+
+//to move pieces on board via hashing in/out
+const hashPiece = function (piece, sq) {
+  gameBoard.posKey ^= pieceKeys[(piece * 120) + sq];
+};
+
+const hashCastle = function () {
+  gameBoard.posKey ^= castleKeys[castlePerm];
+};
+
+const hashSide = function () {
+  gameBoard.posKey ^= sideKeys;
+};
+
+const hashEnPasant = function () {
+  gameBoard.posKey ^= pieceKeys[gameBoard.enPasant];
+};

@@ -133,8 +133,7 @@ const printBoard = function () {
 
 
 
-
-
+//Generate Hash key for a position
 const generatePosKey = function () {
   let piece = pieces.empty;
   let fullKey = 0;
@@ -144,6 +143,7 @@ const generatePosKey = function () {
     piece = gameBoard.pieces[sq];
     if (piece != pieces.empty && piece != squares.offBoard) {
       //if there is a piece, we will hash in the random key at position piece x 120 + square
+      //XOR each piece type and its relevant square
       fullKey ^= pieceKeys[(piece * 120) + sq];
     };
   };
