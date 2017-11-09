@@ -61,6 +61,7 @@ const gameBoard = {
 //the piece list allows us to if you have x pieces on the board, we are only going to make 8 searches in our array to find that piece
 // piece list array [i] pieceListArr[]
 //need to calculate the index to give the square  ie sqOfPiece = pieceListArr[i]
+
 //need to store the max capacity of each piece ie promoting every pawn to knight = 10 knights
 //wN: 2 --> up to 10 max, so want to have enough possible places to store the 10 knights, so we never cross over indicies
 //wN * 10 + i --> 0 based index on pieceNum()
@@ -138,7 +139,7 @@ const generatePosKey = function () {
   let piece = pieces.empty;
   let fullKey = 0;
   //loop through all the squares 0 - 120
-  for (let sq = 0; i < numBoardSq; sq++) {
+  for (let sq = 0; sq < numBoardSq; sq++) {
     //get a piece, and if piece is not empty, and not = 100 (offBoard)
     piece = gameBoard.pieces[sq];
     if (piece != pieces.empty && piece != squares.offBoard) {
@@ -163,7 +164,7 @@ const generatePosKey = function () {
   return fullKey;
 };
 
-//eg. at start   rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
+//eg. at start
 //move to e4 --> rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1
 
 const fenString = function (FEN) {
@@ -234,7 +235,8 @@ const fenString = function (FEN) {
 
         piece = pieces.empty;
         //So if we see 4, we can set 4 empty cells...
-        count = FEN[fenCount].charCodeAt() - '0'.charCodeAt();
+        count = Number(FEN[fenCount])
+        //FEN[fenCount].charCodeAt() - '0'.charCodeAt();
         break;
 
       case "/":
@@ -243,6 +245,8 @@ const fenString = function (FEN) {
         //reset to leftmost file
         file = files.fileA;
         fenCount++;
+        console.log(fenCount);
+        // debugger;
         continue;
 
       default:
@@ -260,11 +264,13 @@ const fenString = function (FEN) {
       };
     //Go to the next character in string
     fenCount++;
+    console.log(fenCount);
   };
 
   //While loop ends at first space
   //Set who's turn
   //If you see w
+  // debugger;
   if (FEN[fenCount] === "w") {
     gameBoard.side = colors.white;
     //Skip next space
@@ -282,7 +288,7 @@ const fenString = function (FEN) {
     };
 
     switch (FEN[fenCount]) {
-      //gameBoard.castlePerm | castleBits.wCQ = 3 (0000 | 0011 = 3)
+      //gameBoard.castlePerm | castleBits.wCQ = 2 (0000 | 0010 = )
       case "K":
         gameBoard.castlePerm |= castleBits.wCK;
         break;
@@ -308,8 +314,8 @@ const fenString = function (FEN) {
   if (FEN[fenCount] != "-") {
     //get file
     //String.fromCharCode(); ??
-    file = FEN[fenCount].charCodeAt() - "a".charCodeAt();
-    rank = FEN[fenCount + 1].charCodeAt() - "1".charCodeAt();
+    file = FEN[fenCount].charCodeAt - "a".charCodeAt();
+    rank = Number(FEN[fenCount]) //FEN[fenCount + 1].charCodeAt() - "1".charCodeAt();
     console.log("FEN[fenCount]" + FEN[fenCount] + "File" + file + "Rank" + rank);
     //Set the enPasant square
     gameBoard.enPasant = getSquare(file, rank);;
@@ -318,7 +324,7 @@ const fenString = function (FEN) {
   //Generate position key
   gameBoard.posKey = generatePosKey();
   console.log("FEN SUCSESS!");
-
+  // debugger;
 };
 
 

@@ -1,6 +1,3 @@
-
-
-
 //Defining the board array
 const numBoardSq = 120;
 
