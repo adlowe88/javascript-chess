@@ -352,7 +352,7 @@ const isSqAttacked = function (sq, color) {
   //Various knights directions (8)
   for (let i = 0; i < 8; i++) {
     piece = gameBoard.pieces[sq + nDir[i]];
-    //On board, color is for the relevant side,
+    //On board,knight of the right color ?
     if ((piece != squares.offBoard) && (pieceCol[piece] === color) && (knight[piece] === true)) {
       console.log("KNIGHT!");
       return true;
@@ -362,7 +362,7 @@ const isSqAttacked = function (sq, color) {
   //King directions (8)
   for (let i = 0; i < 8; i++) {
     piece = gameBoard.pieces[sq + kDir[i]];
-    //On board, color is for the relevant side,
+    //On board etc.
     if ((piece != squares.offBoard) && (pieceCol[piece] === color) && (king[piece] === true)) {
       return true;
     };
@@ -381,7 +381,8 @@ const isSqAttacked = function (sq, color) {
       //Keep iterating until we encounter a piece
       if (piece != pieces.empty) {
         //Is the piece a rook or a queen and of the same color?
-        if ((rookQueen[piece] === true) && pieceCol[piece] === color) {
+        if ((rookQueen[piece] === true) && (pieceCol[piece] === color)) {
+          console.log("ROOK OR QUEEN!");
           return true;
         };
         //Break while loop because we found another piece, and can't iterate further
@@ -389,6 +390,8 @@ const isSqAttacked = function (sq, color) {
       };
       //Otherwise increment nextSq in the current direction
       nextSq += dir;
+      //Set the piece to the next square
+      piece = gameBoard.pieces[nextSq];
     };
   };
 
@@ -405,6 +408,7 @@ const isSqAttacked = function (sq, color) {
       if (piece != pieces.empty) {
         //Is the piece a rook or a queen and of the same color?
         if ((bishopQueen[piece] === true) && pieceCol[piece] === color) {
+          console.log("BISHOP OR QUEEN!");
           return true;
         };
         //Break while loop because we found another piece, and can't iterate further
@@ -412,6 +416,7 @@ const isSqAttacked = function (sq, color) {
       };
       //Otherwise increment nextSq in the current direction
       nextSq += dir;
+      piece = gameBoard.pieces[nextSq];
     };
   };
   return false;
