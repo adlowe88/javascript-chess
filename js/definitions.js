@@ -48,6 +48,7 @@ const ranksBoardArr = new Array (numBoardSq);
 //Starting FEN string
 startingFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 ruyLopezFEN = "r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3";
+sicilianFEN = "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2";
 
 //For ease of printing board to console
 let pieceChar = ".PNBRQKpnbrqk";
@@ -131,10 +132,10 @@ const kDir = [-1, -10, -9, -11, 1, 10, 9, 11];
 
 // 0000 0000 0000 0000 0000 0111 1111 -> fromSq 0x7F
 // 0000 0000 0000 0011 1111 1000 0000 -> toSq >> 7, 0x7F
-// 0000 0000 0011 1100 0000 0000 0000 -> captured >> 14, 0xF
+// 0000 0000 0011 1100 0000 0000 0000 -> captured piece >> 14, 0xF
 // 0000 0000 0100 0000 0000 0000 0000 -> enPasMove 0x40000
 // 0000 0000 1000 0000 0000 0000 0000 -> pawnFirst 0x80000
-// 0000 1111 0000 0000 0000 0000 0000 -> promoted >> 20, 0xF
+// 0000 1111 0000 0000 0000 0000 0000 -> promoted to >> 20, 0xF
 // 0001 0000 0000 0000 0000 0000 0000 -> castleMove 0x1000000
 
 //25 bits
@@ -152,11 +153,14 @@ const toSq = function (move) {
   return ((move >> 7) & 0x7F);
 };
 
-//4 bits
+//4 bits (12 different pieces)
 const captured = function () {
   return ((move >> 14) & 0xF);
 };
 
+
+//1 bit for enPasant
+//1 bit for pawnFirst move
 //4 bits
 const promoted = function () {
   return ((move >> 20) & 0xF)
@@ -172,7 +176,7 @@ let castleMove = 0x1000000;
 let captureMove = 0x7C000;
 let promotionMove = 0xF00000;
 
-let noMove = 0;
+// let noMove = 0;
 
 //to move pieces on board via hashing in/out
 const hashPiece = function (piece, sq) {

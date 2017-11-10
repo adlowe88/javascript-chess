@@ -156,7 +156,7 @@ const generatePosKey = function () {
   //If enPasant square isnt noSq, (the square HAS been set in this position), hash it in
   //Cant use piece * 120, as would be 0 , so we just use the square itself
   if (gameBoard.enPasant != squares.noSq) {
-    finalKey ^= pieceKeys[gameBoard.enPas];
+    fullKey ^= pieceKeys[gameBoard.enPasant];
   };
 
   fullKey ^= castleKeys[gameBoard.castlePerm];
@@ -335,6 +335,8 @@ const isSqAttacked = function (sq, color) {
   //Who's turn is it?
   //What pieces are targeting this square?
   //White going up the board, black going down
+
+  //Is this square being attacked by a pawn
   if (color === colors.white) {
     if (gameBoard.pieces[sq - 11] === pieces.wP || gameBoard.pieces[sq - 9] === pieces.wP) {
     console.log("WHITE PAWN!");

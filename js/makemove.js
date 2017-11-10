@@ -54,7 +54,7 @@ const addPiece = function (sq, piece) {
 //moving pieces
 //update correct piece in piece list
 const movePiece = function (from, to) {
-    //the piece we want to on square from
+    //the piece we want to move and from which square
     let piece = gameBoard.pieces[from];
 
     //hash piece off square
