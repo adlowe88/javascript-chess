@@ -78,3 +78,6 @@ const movePiece = function (from, to) {
       };
     };
 };
+
+
+//Crete function to ACTUALLY move a piece
